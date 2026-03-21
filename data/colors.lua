@@ -18,6 +18,7 @@ colors.category = {
     runes       = function() return color_white(255) end,
     gold        = function() return color_yellow(255) end,
     obols       = function() return color_white(255) end,
+    pits        = function() return color_red(255) end,
     uptime      = function() return color_white(255) end,
     rate        = function() return color_white(180) end,
     run_best    = function() return color_green(255) end,

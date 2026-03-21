@@ -11,6 +11,7 @@ local colors   = require 'data.colors'
 local rates    = require 'modules.rates'
 local drops    = require 'modules.drops'
 local history  = require 'modules.history'
+local pit      = require 'modules.pit'
 
 local drawing = {}
 
@@ -43,7 +44,7 @@ local function draw_totals(x, y, fs)
     local show_rates = settings.show_rates
     local secs = utils.get_session_seconds()
 
-    draw_bold('-- Drop Stats | ALiTiS | v.1.0 --', x, y, fs, colors.category.separator())
+    draw_bold('-- Drop Stats | ALiTiS | v.1.1 --', x, y, fs, colors.category.separator())
     y = y + fs + settings.header_gap
 
     local categories = {
@@ -80,6 +81,20 @@ local function draw_totals(x, y, fs)
             line = line .. '  (' .. rates.get_formatted('gold') .. ')'
         end
         draw_line(line, x, y, fs, 'gold', settings.bold_gold)
+        y = y + fs + settings.line_gap
+    end
+
+    if settings.show_pits then
+        local avg = pit.get_avg_time()
+        local avg_str = avg > 0 and ('  avg ' .. utils.format_uptime(avg)) or ''
+        local secs = utils.get_session_seconds()
+        local pph_str = ''
+        if secs >= 60 and s.pits > 0 then
+            local pph = s.pits / (secs / 3600)
+            pph_str = '  ' .. string.format("%.1f/h", pph)
+        end
+        local line = 'Pits        : ' .. tostring(s.pits) .. pph_str .. avg_str
+        draw_line(line, x, y, fs, 'pits', true)
         y = y + fs + settings.line_gap
     end
 

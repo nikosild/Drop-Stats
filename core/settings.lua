@@ -27,6 +27,7 @@ local settings = {
     bold_gold        = false,
     show_obols        = true,
     bold_obols        = false,
+    show_pits         = true,
     show_uptime      = true,
     show_rates       = false,
     show_history     = true,
@@ -59,6 +60,7 @@ function settings:update_settings()
     settings.bold_gold        = el.bold_gold:get()
     settings.show_obols        = el.show_obols:get()
     settings.bold_obols        = el.bold_obols:get()
+    settings.show_pits         = el.show_pits:get()
     settings.show_uptime      = el.show_uptime:get()
     settings.show_rates       = el.show_rates:get()
     settings.show_history     = el.show_history:get()

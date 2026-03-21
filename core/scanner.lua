@@ -10,6 +10,7 @@ local items   = require 'modules.items'
 local gold    = require 'modules.gold'
 local runes   = require 'modules.runes'
 local obols   = require 'modules.obols'
+local pit     = require 'modules.pit'
 local rates   = require 'modules.rates'
 local history = require 'modules.history'
 local persistence = require 'core.persistence'
@@ -44,6 +45,7 @@ function scanner.scan()
     gold.scan(lp)
     runes.scan(lp)
     obols.scan(lp)
+    pit.scan()
 
     -- Auto-save session periodically (if enabled)
     if settings.persist_session then
@@ -58,7 +60,7 @@ end
 -- Full reset (clears everything)
 ------------------------------------------------------------
 function scanner.reset()
-    tracker.session    = { rares = 0, legendaries = 0, uniques = 0, mythics = 0, runes = 0, gold = 0, obols = 0 }
+    tracker.session    = { rares = 0, legendaries = 0, uniques = 0, mythics = 0, runes = 0, gold = 0, obols = 0, pits = 0, pit_total_time = 0 }
     tracker.prev_scan  = { gold = nil, runes = nil, obols = nil }
     tracker.seen_items = {}
     tracker.drop_log   = {}
@@ -68,6 +70,7 @@ function scanner.reset()
     rates.reset_peaks()
     history.clear()
     history.start_run()
+    pit.reset()
     persistence.clear()
 
     utils.log('Session reset')

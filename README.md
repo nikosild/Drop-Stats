@@ -1,4 +1,4 @@
-# Drop Stats | ALiTiS | v.1.0
+# Drop Stats | ALiTiS | v.1.1
 
 ## Session Loot Tracker for Diablo IV
 
@@ -222,3 +222,51 @@ Drop Stats/
 ---
 
 *Created by ALiTiS*
+
+---
+
+## Pit Counter
+
+Drop Stats automatically detects and counts your Pit of Artificers runs — no keybind or manual input needed.
+
+### How It Works
+The plugin monitors your current zone. When you enter a Pit zone (`EGD_MSWK_World_01` or `EGD_MSWK_World_02`), a timer starts. When you leave the Pit (exit, reset, or teleport out), the run is counted and the duration is recorded. Runs shorter than 15 seconds are ignored to prevent false counts from loading screens or accidental entries.
+
+### What It Displays
+The Pit line appears after Gold in the overlay, rendered in red bold:
+
+```
+Pits        : 5  4.2/h  avg 2m 35s
+```
+
+- **Count** — total Pit runs completed this session
+- **Per hour** — how many Pits you're clearing per hour (shown after 1 minute)
+- **Average time** — average duration of all completed Pits
+
+### Persistence
+Pit count and total time are included in the F5 save/restore system. Your Pit stats survive reloads and are cleared on manual reset.
+
+### Toggle
+Enable or disable the Pit Counter from the **Tracked Categories** section in the menu. It is enabled by default.
+
+---
+
+## Changelog
+
+### v.1.1
+- **Added Pit Counter** — auto-detects Pit of Artificers runs by monitoring zone transitions
+- Displays total Pits completed, Pits per hour, and average Pit duration
+- Pit data persists across F5 reloads
+- Displayed in red bold after Gold in the overlay
+
+### v.1.0
+- Initial release
+- Track Rares, Legendaries, Uniques, Mythics, Runes, Obols, Gold
+- Per-hour rates with peak tracking
+- Recent Drops scrolling feed with color-coded entries
+- Run History with per-run breakdowns and best run highlight
+- F5 Session Persistence with auto-save every 5 seconds
+- Per-category Bold toggle for display customization
+- Adjustable Font Size, Line Gap, Header Gap, Offset X/Y
+- External API for other plugins
+- Mythic detection via built-in sno_id database

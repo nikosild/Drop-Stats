@@ -4,7 +4,7 @@
 ------------------------------------------------------------
 
 local plugin_label = 'session_stats'
-local plugin_version = 'Drop Stats | ALiTiS | v.1.0'
+local plugin_version = 'Drop Stats | ALiTiS | v.1.1'
 
 local gui = {}
 
@@ -67,6 +67,8 @@ gui.elements = {
     obols_tree        = tree_node:new(2),
     show_obols        = create_checkbox(true, 'show_obols'),
     bold_obols        = create_checkbox(false, 'bold_obols'),
+
+    show_pits         = create_checkbox(true, 'show_pits'),
 
     -- Extra sections
     extras_tree      = tree_node:new(1),
@@ -147,6 +149,8 @@ function gui.render()
             gui.elements.bold_obols:render('Bold', 'Render obols text in bold')
             gui.elements.obols_tree:pop()
         end
+
+        gui.elements.show_pits:render('Pit Counter', 'Auto-detect and count completed Pit runs with average time')
 
         gui.elements.category_tree:pop()
     end

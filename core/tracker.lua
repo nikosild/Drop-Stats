@@ -19,6 +19,8 @@ local tracker = {
         runes       = 0,
         gold        = 0,
         obols       = 0,
+        pits        = 0,
+        pit_total_time = 0,
     },
 
     -- Previous scan values (for delta detection)

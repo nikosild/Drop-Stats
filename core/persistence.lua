@@ -46,6 +46,8 @@ local function serialize()
         'runes=' .. tostring(s.runes),
         'gold=' .. tostring(s.gold),
         'obols=' .. tostring(s.obols),
+        'pits=' .. tostring(s.pits),
+        'pit_total_time=' .. tostring(s.pit_total_time),
         'elapsed=' .. tostring(elapsed),
         'peak_rares=' .. tostring(p.rares_per_hour),
         'peak_legendaries=' .. tostring(p.legendaries_per_hour),
@@ -119,6 +121,8 @@ function persistence.restore()
         tracker.session.runes       = tonumber(data.runes) or 0
         tracker.session.gold        = tonumber(data.gold) or 0
         tracker.session.obols       = tonumber(data.obols) or 0
+        tracker.session.pits        = tonumber(data.pits) or 0
+        tracker.session.pit_total_time = tonumber(data.pit_total_time) or 0
 
         -- Restore uptime by adjusting uptime_start backwards
         local elapsed = tonumber(data.elapsed) or 0
