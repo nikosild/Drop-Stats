@@ -1,4 +1,4 @@
-# Drop Stats | ALiTiS | v.1.2
+# Drop Stats | ALiTiS | v.1.3
 
 ## Session Loot Tracker for Diablo IV
 
@@ -15,7 +15,12 @@ Every item that enters your inventory is detected and classified:
 - **Legendaries**
 - **Uniques**
 - **Mythics** — identified by a built-in database of all known Mythic item IDs (Tyrael's Might, Harlequin Crest, Shattered Vow, etc.)
-- **Runes** — tracked from your socketable inventory, counting stack sizes
+
+### Sigils-Keys
+Tracks all items in your dungeon key inventory — nightmare sigils, slaughterhouse sigils, compasses, boss lair keys, and any other dungeon entry items. New sigils and keys are individually logged to the Recent Drops feed with their full name.
+
+### Runes
+Tracks runes from your socketable inventory, counting stack sizes. New runes are individually logged to the Recent Drops feed with their display name.
 
 ### Currencies & Resources
 - **Obols** (Murmuring Obols) — only counts gains, ignores spending at the Purveyor
@@ -41,6 +46,33 @@ Pits        : 5  4.2/h  avg 2m 35s
 
 ---
 
+## Recent Drops Feed
+
+A scrolling log of your most recent drops, showing:
+
+- **Timestamp** — how far into the session the item dropped (formatted as HH:MM:SS)
+- **Category tag** — a short label like `LEG`, `UNI`, `MYT`, `KEY`, `RUN`, `OBO`, or `MEA`
+- **Item name** — the display name of the item, or the Mythic name from the database
+
+Every tracked category (except Gold) appears in the drop feed:
+- **Rares, Legendaries, Uniques, Mythics** — logged when entering inventory
+- **Sigils-Keys** — logged with full sigil/key name (e.g., "Charnel House Nightmare Sigil")
+- **Runes** — logged with display name
+- **Obols** — logged as "+25 Obols"
+- **Meat** — logged as "+3 Meaty Offering"
+
+Each entry is color-coded to match its category. **Mythic drops are rendered in bold** to make them stand out as the most valuable finds.
+
+The log size is configurable (default: 3 entries, adjustable up to 20).
+
+---
+
+## Mythic Flash Alert
+
+When a Mythic item drops, the **Mythics line on the overlay flashes bold pink for 10 seconds**. The line blinks on and off rapidly, making it impossible to miss even during intense gameplay. After 10 seconds, it returns to its normal display.
+
+---
+
 ## Per-Hour Rates
 
 Toggle **Show Rates (/h)** to see live per-hour calculations next to every category. Rates update every 2 seconds and are based on your total session time. For example, if you've found 45 Legendaries in 30 minutes, you'll see `90/h` next to your Legendary count. Large numbers are formatted automatically (e.g., `12.5K/h` for gold).
@@ -51,19 +83,7 @@ Toggle **Show Rates (/h)** to see live per-hour calculations next to every categ
 
 When enabled, the plugin tracks the **best per-hour rate** you've achieved for each category during the session. Peak rates begin recording after 10 seconds to avoid misleading spikes from early drops. This lets you see your most productive moments at a glance.
 
-The Peak Rates section appears as a separate block below the main stats with a green bold header.
-
----
-
-## Recent Drops Feed
-
-A scrolling log of your most recent item drops, showing:
-
-- **Timestamp** — how far into the session the item dropped (formatted as HH:MM:SS)
-- **Category tag** — a short label like `LEG`, `UNI`, `MYT`, or `RUN`
-- **Item name** — the display name of the item, or the Mythic name from the database
-
-Each entry is color-coded to match its rarity. The log size is configurable (default: 3 entries, adjustable up to 20).
+The Peak Rates section appears as a separate block below the main stats with a white bold header.
 
 ---
 
@@ -92,7 +112,7 @@ One of the most important features: **your stats survive F5 reloads**.
 
 Normally, pressing F5 restarts all Lua plugins and wipes all data. Drop Stats solves this by automatically saving your session to a file (`session_save.txt`) every 5 seconds. When the plugin reloads, it reads the file and restores everything:
 
-- All item counts (Rares, Legendaries, Uniques, Mythics, Runes)
+- All item counts (Rares, Legendaries, Uniques, Mythics, Sigils-Keys, Runes)
 - Gold, Obols, Meat totals
 - Pit count and total Pit time
 - Session elapsed time (uptime continues from where it left off)
@@ -112,7 +132,7 @@ The **"F5 Saves Data"** checkbox in the menu lets you control this behavior:
 
 Use the **Reset Session** keybind to completely clear all data:
 
-- All counters go to zero (items, currencies, pits)
+- All counters go to zero (items, currencies, keys, pits)
 - Uptime resets
 - Peak rates clear
 - Drop log clears
@@ -135,11 +155,11 @@ Every visual aspect of the overlay is configurable:
 - **Line Gap** (0–10, default: 1) — extra spacing between category lines
 
 ### Per-Category Control
-Each tracked category (Rares, Legendaries, Uniques, Mythics, Runes, Obols, Meat, Gold) has its own collapsible settings with:
+Each tracked category (Rares, Legendaries, Uniques, Mythics, Sigils-Keys, Runes, Obols, Meat, Gold) has its own collapsible settings with:
 - **Enable/Disable** — choose which categories appear on the overlay
 - **Bold toggle** — render that category in bold text (double-draw for visibility)
 
-By default, **Uniques and Mythics are bold**, making them stand out from regular drops.
+By default, **Uniques, Mythics, and Sigils-Keys are bold**, making them stand out from regular drops.
 
 ### Section Toggles
 - **Show Rates (/h)** — display per-hour rates inline
@@ -160,14 +180,16 @@ Each category has a distinct color for quick visual identification:
 | Rares | Yellow |
 | Legendaries | Orange |
 | Uniques | White (Bold) |
-| Mythics | Pink (Bold) |
+| Mythics | Pink (Bold, flashes on drop) |
+| Sigils-Keys | Green (Bold) |
 | Runes | White |
-| Obols | White |
+| Obols | Cyan |
 | Meat | Red |
 | Gold | Yellow |
 | Pits | Red (Bold) |
 | Peak Rates | Green |
 | Run History (Best) | Green |
+| Run History (Normal) | Cyan |
 | Section Headers | White (Bold) |
 
 ---
@@ -185,7 +207,7 @@ Tyrael's Might, The Grandfather, Andariel's Visage, Ahavarion Spear of Lycander,
 
 Drop Stats exposes a global API (`PLUGIN_session_stats`) that other plugins can use to read your session data:
 
-- `get_session()` — returns all current totals and uptime (including pits, meat, obols)
+- `get_session()` — returns all current totals and uptime (including keys, pits, meat, obols)
 - `get_rates()` — returns current per-hour rates
 - `get_peaks()` — returns peak rate records
 - `get_recent_drops(max)` — returns recent drop log entries
@@ -220,6 +242,7 @@ Drop Stats/
 │   ├── gold.lua
 │   ├── obols.lua
 │   ├── meat.lua
+│   ├── keys.lua
 │   ├── runes.lua
 │   ├── pit.lua
 │   ├── rates.lua
@@ -231,7 +254,7 @@ Drop Stats/
     └── rarity.lua
 ```
 3. Press F5 to reload plugins
-4. Open the menu and find **Drop Stats | ALiTiS | v.1.2**
+4. Open the menu and find **Drop Stats | ALiTiS | v.1.3**
 5. Check **Enable** and you're ready to go
 
 ---
@@ -248,6 +271,16 @@ Drop Stats/
 ---
 
 ## Changelog
+
+### v.1.3
+- **Added Sigils-Keys tracking** — tracks all dungeon keys, nightmare sigils, compasses from `get_dungeon_key_items()`
+- Sigils-Keys displayed in green bold on overlay with per-hour rate
+- **All categories now appear in Recent Drops feed** (except Gold) — Runes, Sigils-Keys, Obols, and Meat all log individually
+- **Mythic Flash Alert** — Mythics line flashes bold pink for 10 seconds when a Mythic drops
+- **Mythic drops are bold in Recent Drops** feed for maximum visibility
+- Runes module reworked to track individual items and log to drop feed
+- Updated color scheme: Obols = Cyan, Sigils-Keys = Green, Run History = Cyan
+- Renamed "Sigils" category to "Sigils-Keys" to cover all dungeon entry items
 
 ### v.1.2
 - **Added Meat Tracker** — tracks Meaty Offerings picked up from consumable inventory
