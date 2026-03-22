@@ -57,6 +57,10 @@ function drops.get_color(category)
         legendary = 'legendaries',
         unique    = 'uniques',
         mythic    = 'mythics',
+        rune      = 'rune',
+        key       = 'key',
+        obols     = 'obols',
+        meat      = 'meat',
     }
     local key = map[category] or category
     local color_fn = colors.category[key]

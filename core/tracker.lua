@@ -17,6 +17,7 @@ local tracker = {
         uniques     = 0,
         mythics     = 0,
         runes       = 0,
+        keys        = 0,
         gold        = 0,
         obols       = 0,
         meat        = 0,
@@ -28,6 +29,7 @@ local tracker = {
     prev_scan = {
         gold  = nil,
         runes = nil,
+        keys   = nil,
         obols = nil,
         meat  = nil,
     },
@@ -57,6 +59,9 @@ local tracker = {
     -- Drop log (recent items, ring buffer)
     drop_log = {},
     drop_log_max = 50,
+
+    -- Mythic flash effect
+    last_mythic_time = 0,
 }
 
 return tracker

@@ -9,6 +9,7 @@ local utils   = require 'core.utils'
 local items   = require 'modules.items'
 local gold    = require 'modules.gold'
 local runes   = require 'modules.runes'
+local keys    = require 'modules.keys'
 local obols   = require 'modules.obols'
 local meat    = require 'modules.meat'
 local pit     = require 'modules.pit'
@@ -34,6 +35,7 @@ function scanner.scan()
         items.build_baseline(lp)
         gold.build_baseline(lp)
         runes.build_baseline(lp)
+        keys.build_baseline(lp)
         obols.build_baseline(lp)
         meat.build_baseline(lp)
         history.start_run()
@@ -46,6 +48,7 @@ function scanner.scan()
     items.scan(lp)
     gold.scan(lp)
     runes.scan(lp)
+    keys.scan(lp)
     obols.scan(lp)
     meat.scan(lp)
     pit.scan()
@@ -63,8 +66,8 @@ end
 -- Full reset (clears everything)
 ------------------------------------------------------------
 function scanner.reset()
-    tracker.session    = { rares = 0, legendaries = 0, uniques = 0, mythics = 0, runes = 0, gold = 0, obols = 0, meat = 0, pits = 0, pit_total_time = 0 }
-    tracker.prev_scan  = { gold = nil, runes = nil, obols = nil, meat = nil }
+    tracker.session    = { rares = 0, legendaries = 0, uniques = 0, mythics = 0, runes = 0, keys = 0, gold = 0, obols = 0, meat = 0, pits = 0, pit_total_time = 0 }
+    tracker.prev_scan  = { gold = nil, runes = nil, keys = nil, obols = nil, meat = nil }
     tracker.seen_items = {}
     tracker.drop_log   = {}
     tracker.first_scan = true
@@ -74,6 +77,8 @@ function scanner.reset()
     history.clear()
     history.start_run()
     pit.reset()
+    runes.reset()
+    keys.reset()
     persistence.clear()
 
     utils.log('Session reset')

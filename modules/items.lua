@@ -16,6 +16,7 @@ local items = {}
 local function classify_item(sno_id, rarity)
     if mythics[sno_id] ~= nil then
         tracker.session.mythics = tracker.session.mythics + 1
+        tracker.last_mythic_time = get_time_since_inject()
         return 'mythic', mythics[sno_id]
     elseif rarity == 6 then
         tracker.session.uniques = tracker.session.uniques + 1

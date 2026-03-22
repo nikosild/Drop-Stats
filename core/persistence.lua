@@ -44,6 +44,7 @@ local function serialize()
         'uniques=' .. tostring(s.uniques),
         'mythics=' .. tostring(s.mythics),
         'runes=' .. tostring(s.runes),
+        'keys=' .. tostring(s.keys),
         'gold=' .. tostring(s.gold),
         'obols=' .. tostring(s.obols),
         'meat=' .. tostring(s.meat),
@@ -120,6 +121,7 @@ function persistence.restore()
         tracker.session.uniques     = tonumber(data.uniques) or 0
         tracker.session.mythics     = tonumber(data.mythics) or 0
         tracker.session.runes       = tonumber(data.runes) or 0
+        tracker.session.keys        = tonumber(data.keys) or 0
         tracker.session.gold        = tonumber(data.gold) or 0
         tracker.session.obols       = tonumber(data.obols) or 0
         tracker.session.meat        = tonumber(data.meat) or 0

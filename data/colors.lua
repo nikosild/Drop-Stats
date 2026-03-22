@@ -16,14 +16,17 @@ colors.category = {
     uniques     = function() return color_white(255) end,
     mythics     = function() return color_pink(255) end,
     runes       = function() return color_white(255) end,
+    rune        = function() return color_white(255) end,
+    keys        = function() return color_green(255) end,
+    key         = function() return color_green(255) end,
     gold        = function() return color_yellow(255) end,
-    obols       = function() return color_white(255) end,
+    obols       = function() return color_cyan(255) end,
     meat        = function() return color_red(255) end,
     pits        = function() return color_red(255) end,
     uptime      = function() return color_white(255) end,
     rate        = function() return color_white(180) end,
     run_best    = function() return color_green(255) end,
-    run_normal  = function() return color_white(200) end,
+    run_normal  = function() return color_cyan(200) end,
 }
 
 -- Which categories get the bold (double-draw) treatment

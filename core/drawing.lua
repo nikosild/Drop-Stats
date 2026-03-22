@@ -44,7 +44,7 @@ local function draw_totals(x, y, fs)
     local show_rates = settings.show_rates
     local secs = utils.get_session_seconds()
 
-    draw_bold('-- Drop Stats | ALiTiS | v.1.2 --', x, y, fs, colors.category.separator())
+    draw_bold('-- Drop Stats | ALiTiS | v.1.3 --', x, y, fs, colors.category.separator())
     y = y + fs + settings.header_gap
 
     local categories = {
@@ -52,6 +52,7 @@ local function draw_totals(x, y, fs)
         { key = 'legendaries', label = 'Legendaries ', value = s.legendaries, show = settings.show_legendaries, bold = settings.bold_legendaries },
         { key = 'uniques',     label = 'Uniques     ', value = s.uniques,     show = settings.show_uniques,     bold = settings.bold_uniques },
         { key = 'mythics',     label = 'Mythics     ', value = s.mythics,     show = settings.show_mythics,     bold = settings.bold_mythics },
+        { key = 'keys',        label = 'Sigils-Keys ', value = s.keys,        show = settings.show_keys,        bold = settings.bold_keys },
         { key = 'runes',       label = 'Runes       ', value = s.runes,       show = settings.show_runes,       bold = settings.bold_runes },
     }
 
@@ -61,8 +62,24 @@ local function draw_totals(x, y, fs)
             if show_rates then
                 line = line .. '  (' .. rates.get_formatted(cat.key) .. ')'
             end
+
+            -- Flash mythics line for 10 seconds after a mythic drop
+            if cat.key == 'mythics' and tracker.last_mythic_time > 0 then
+                local elapsed = get_time_since_inject() - tracker.last_mythic_time
+                if elapsed < 10 then
+                    -- Blink: visible for 0.4s, hidden for 0.2s
+                    local cycle = elapsed % 0.6
+                    if cycle < 0.4 then
+                        draw_bold(line, x, y, fs, colors.category.mythics())
+                    end
+                    y = y + fs + settings.line_gap
+                    goto continue
+                end
+            end
+
             draw_line(line, x, y, fs, cat.key, cat.bold)
             y = y + fs + settings.line_gap
+            ::continue::
         end
     end
 
@@ -134,7 +151,7 @@ local function draw_peaks(x, y, fs)
     if secs < 10 then return y end
 
     y = y + settings.header_gap  -- header gap
-    draw_bold('-- Peak Rates --', x, y, fs, colors.category.run_best())
+    draw_bold('-- Peak Rates --', x, y, fs, colors.category.separator())
     y = y + fs
 
     local peak_lines = {
@@ -173,7 +190,11 @@ local function draw_drops(x, y, fs)
     for _, entry in ipairs(recent) do
         local text = drops.format_entry(entry)
         local col  = drops.get_color(entry.category)
-        draw_text(text, x, y, small_fs, col)
+        if entry.category == 'mythic' then
+            draw_bold(text, x, y, small_fs, col)
+        else
+            draw_text(text, x, y, small_fs, col)
+        end
         y = y + small_fs
     end
 

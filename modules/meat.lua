@@ -12,6 +12,21 @@ local meat = {}
 local MEAT_SNO_ID = 2583761
 
 ------------------------------------------------------------
+-- Log meat drop to feed
+------------------------------------------------------------
+local function log_meat_drop(amount)
+    local entry = {
+        category  = 'meat',
+        name      = '+' .. tostring(amount) .. ' Meaty Offering',
+        timestamp = get_time_since_inject() - tracker.uptime_start,
+    }
+    table.insert(tracker.drop_log, 1, entry)
+    while #tracker.drop_log > tracker.drop_log_max do
+        table.remove(tracker.drop_log)
+    end
+end
+
+------------------------------------------------------------
 -- Count all meat in consumable inventory
 ------------------------------------------------------------
 local function count_meat(lp)
@@ -44,7 +59,9 @@ end
 function meat.scan(lp)
     local current = count_meat(lp)
     if tracker.prev_scan.meat and current > tracker.prev_scan.meat then
-        tracker.session.meat = tracker.session.meat + (current - tracker.prev_scan.meat)
+        local delta = current - tracker.prev_scan.meat
+        tracker.session.meat = tracker.session.meat + delta
+        log_meat_drop(delta)
     end
     tracker.prev_scan.meat = current
 end

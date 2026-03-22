@@ -60,6 +60,7 @@ local external = {
             uniques     = tracker.session.uniques,
             mythics     = tracker.session.mythics,
             runes       = tracker.session.runes,
+            keys        = tracker.session.keys,
             gold        = tracker.session.gold,
             obols       = tracker.session.obols,
             meat        = tracker.session.meat,

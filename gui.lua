@@ -4,7 +4,7 @@
 ------------------------------------------------------------
 
 local plugin_label = 'session_stats'
-local plugin_version = 'Drop Stats | ALiTiS | v.1.2'
+local plugin_version = 'Drop Stats | ALiTiS | v.1.3'
 
 local gui = {}
 
@@ -55,6 +55,10 @@ gui.elements = {
     mythics_tree     = tree_node:new(2),
     show_mythics     = create_checkbox(true, 'show_mythics'),
     bold_mythics     = create_checkbox(true, 'bold_mythics'),
+
+    keys_tree        = tree_node:new(2),
+    show_keys        = create_checkbox(true, 'show_keys'),
+    bold_keys        = create_checkbox(true, 'bold_keys'),
 
     runes_tree       = tree_node:new(2),
     show_runes       = create_checkbox(true, 'show_runes'),
@@ -137,16 +141,16 @@ function gui.render()
             gui.elements.mythics_tree:pop()
         end
 
+        if gui.elements.keys_tree:push('Sigils-Keys') then
+            gui.elements.show_keys:render('Enable', 'Track and display dungeon keys, sigils, compasses')
+            gui.elements.bold_keys:render('Bold', 'Render keys text in bold')
+            gui.elements.keys_tree:pop()
+        end
+
         if gui.elements.runes_tree:push('Runes') then
             gui.elements.show_runes:render('Enable', 'Track and display runes')
             gui.elements.bold_runes:render('Bold', 'Render runes text in bold')
             gui.elements.runes_tree:pop()
-        end
-
-        if gui.elements.gold_tree:push('Gold') then
-            gui.elements.show_gold:render('Enable', 'Track and display gold earned')
-            gui.elements.bold_gold:render('Bold', 'Render gold text in bold')
-            gui.elements.gold_tree:pop()
         end
 
         if gui.elements.obols_tree:push('Obols') then
@@ -159,6 +163,12 @@ function gui.render()
             gui.elements.show_meat:render('Enable', 'Track and display Meaty Offerings earned')
             gui.elements.bold_meat:render('Bold', 'Render meat text in bold')
             gui.elements.meat_tree:pop()
+        end
+
+        if gui.elements.gold_tree:push('Gold') then
+            gui.elements.show_gold:render('Enable', 'Track and display gold earned')
+            gui.elements.bold_gold:render('Bold', 'Render gold text in bold')
+            gui.elements.gold_tree:pop()
         end
 
         gui.elements.category_tree:pop()

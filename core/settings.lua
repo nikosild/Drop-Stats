@@ -23,6 +23,8 @@ local settings = {
     bold_mythics     = true,
     show_runes       = true,
     bold_runes       = false,
+    show_keys        = true,
+    bold_keys        = true,
     show_gold        = true,
     bold_gold        = false,
     show_obols        = true,
@@ -58,6 +60,8 @@ function settings:update_settings()
     settings.bold_mythics     = el.bold_mythics:get()
     settings.show_runes       = el.show_runes:get()
     settings.bold_runes       = el.bold_runes:get()
+    settings.show_keys        = el.show_keys:get()
+    settings.bold_keys        = el.bold_keys:get()
     settings.show_gold        = el.show_gold:get()
     settings.bold_gold        = el.bold_gold:get()
     settings.show_obols        = el.show_obols:get()

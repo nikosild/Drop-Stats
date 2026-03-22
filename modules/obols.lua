@@ -10,6 +10,21 @@ local utils   = require 'core.utils'
 local obols = {}
 
 ------------------------------------------------------------
+-- Log obols drop to feed
+------------------------------------------------------------
+local function log_obols_drop(amount)
+    local entry = {
+        category  = 'obols',
+        name      = '+' .. tostring(amount) .. ' Obols',
+        timestamp = get_time_since_inject() - tracker.uptime_start,
+    }
+    table.insert(tracker.drop_log, 1, entry)
+    while #tracker.drop_log > tracker.drop_log_max do
+        table.remove(tracker.drop_log)
+    end
+end
+
+------------------------------------------------------------
 -- Build baseline (first scan)
 ------------------------------------------------------------
 function obols.build_baseline(lp)
@@ -27,7 +42,9 @@ function obols.scan(lp)
     if not amount then return end
 
     if tracker.prev_scan.obols and amount > tracker.prev_scan.obols then
-        tracker.session.obols = tracker.session.obols + (amount - tracker.prev_scan.obols)
+        local delta = amount - tracker.prev_scan.obols
+        tracker.session.obols = tracker.session.obols + delta
+        log_obols_drop(delta)
     end
     tracker.prev_scan.obols = amount
 end
