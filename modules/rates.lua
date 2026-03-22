@@ -33,6 +33,7 @@ local function recalculate()
         runes       = utils.get_rate(s.runes, secs),
         gold        = utils.get_rate(s.gold, secs),
         obols       = utils.get_rate(s.obols, secs),
+        meat        = utils.get_rate(s.meat, secs),
     }
 
     -- Update peaks

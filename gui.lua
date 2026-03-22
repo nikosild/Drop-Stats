@@ -4,7 +4,7 @@
 ------------------------------------------------------------
 
 local plugin_label = 'session_stats'
-local plugin_version = 'Drop Stats | ALiTiS | v.1.1'
+local plugin_version = 'Drop Stats | ALiTiS | v.1.2'
 
 local gui = {}
 
@@ -68,6 +68,10 @@ gui.elements = {
     show_obols        = create_checkbox(true, 'show_obols'),
     bold_obols        = create_checkbox(false, 'bold_obols'),
 
+    show_meat         = create_checkbox(true, 'show_meat'),
+    bold_meat         = create_checkbox(false, 'bold_meat'),
+    meat_tree         = tree_node:new(2),
+
     show_pits         = create_checkbox(true, 'show_pits'),
 
     -- Extra sections
@@ -106,6 +110,7 @@ function gui.render()
     -- Category toggles
     if gui.elements.category_tree:push('Tracked Categories') then
         gui.elements.show_rates:render('Show Rates (/h)', 'Display per-hour rates next to totals')
+        gui.elements.show_pits:render('Pit Counter', 'Auto-detect and count completed Pit runs with average time')
         gui.elements.show_uptime:render('Uptime', 'Display session timer')
 
         if gui.elements.rares_tree:push('Rares') then
@@ -150,7 +155,11 @@ function gui.render()
             gui.elements.obols_tree:pop()
         end
 
-        gui.elements.show_pits:render('Pit Counter', 'Auto-detect and count completed Pit runs with average time')
+        if gui.elements.meat_tree:push('Meat') then
+            gui.elements.show_meat:render('Enable', 'Track and display Meaty Offerings earned')
+            gui.elements.bold_meat:render('Bold', 'Render meat text in bold')
+            gui.elements.meat_tree:pop()
+        end
 
         gui.elements.category_tree:pop()
     end

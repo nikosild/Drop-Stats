@@ -44,7 +44,7 @@ local function draw_totals(x, y, fs)
     local show_rates = settings.show_rates
     local secs = utils.get_session_seconds()
 
-    draw_bold('-- Drop Stats | ALiTiS | v.1.1 --', x, y, fs, colors.category.separator())
+    draw_bold('-- Drop Stats | ALiTiS | v.1.2 --', x, y, fs, colors.category.separator())
     y = y + fs + settings.header_gap
 
     local categories = {
@@ -72,6 +72,15 @@ local function draw_totals(x, y, fs)
             line = line .. '  (' .. rates.get_formatted('obols') .. ')'
         end
         draw_line(line, x, y, fs, 'obols', settings.bold_obols)
+        y = y + fs + settings.line_gap
+    end
+
+    if settings.show_meat then
+        local line = 'Meat        : ' .. utils.format_number(s.meat)
+        if show_rates then
+            line = line .. '  (' .. rates.get_formatted('meat') .. ')'
+        end
+        draw_line(line, x, y, fs, 'meat', settings.bold_meat)
         y = y + fs + settings.line_gap
     end
 

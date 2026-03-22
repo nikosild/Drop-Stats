@@ -1,4 +1,4 @@
-# Drop Stats | ALiTiS | v.1.1
+# Drop Stats | ALiTiS | v.1.2
 
 ## Session Loot Tracker for Diablo IV
 
@@ -252,6 +252,12 @@ Enable or disable the Pit Counter from the **Tracked Categories** section in the
 ---
 
 ## Changelog
+
+### v.1.2
+- **Added Meat Tracker** — tracks Meaty Offerings picked up from consumable inventory
+- Meat has its own collapsible dropdown with Enable/Bold toggles
+- Displayed in red after Obols, with per-hour rate support
+- Meat data persists across F5 reloads
 
 ### v.1.1
 - **Added Pit Counter** — auto-detects Pit of Artificers runs by monitoring zone transitions

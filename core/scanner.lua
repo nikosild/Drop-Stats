@@ -10,6 +10,7 @@ local items   = require 'modules.items'
 local gold    = require 'modules.gold'
 local runes   = require 'modules.runes'
 local obols   = require 'modules.obols'
+local meat    = require 'modules.meat'
 local pit     = require 'modules.pit'
 local rates   = require 'modules.rates'
 local history = require 'modules.history'
@@ -34,6 +35,7 @@ function scanner.scan()
         gold.build_baseline(lp)
         runes.build_baseline(lp)
         obols.build_baseline(lp)
+        meat.build_baseline(lp)
         history.start_run()
 
         tracker.first_scan = false
@@ -45,6 +47,7 @@ function scanner.scan()
     gold.scan(lp)
     runes.scan(lp)
     obols.scan(lp)
+    meat.scan(lp)
     pit.scan()
 
     -- Auto-save session periodically (if enabled)
@@ -60,8 +63,8 @@ end
 -- Full reset (clears everything)
 ------------------------------------------------------------
 function scanner.reset()
-    tracker.session    = { rares = 0, legendaries = 0, uniques = 0, mythics = 0, runes = 0, gold = 0, obols = 0, pits = 0, pit_total_time = 0 }
-    tracker.prev_scan  = { gold = nil, runes = nil, obols = nil }
+    tracker.session    = { rares = 0, legendaries = 0, uniques = 0, mythics = 0, runes = 0, gold = 0, obols = 0, meat = 0, pits = 0, pit_total_time = 0 }
+    tracker.prev_scan  = { gold = nil, runes = nil, obols = nil, meat = nil }
     tracker.seen_items = {}
     tracker.drop_log   = {}
     tracker.first_scan = true

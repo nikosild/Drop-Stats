@@ -62,6 +62,7 @@ local external = {
             runes       = tracker.session.runes,
             gold        = tracker.session.gold,
             obols       = tracker.session.obols,
+            meat        = tracker.session.meat,
             pits        = tracker.session.pits,
             pit_total_time = tracker.session.pit_total_time,
             uptime      = utils.get_session_seconds(),
