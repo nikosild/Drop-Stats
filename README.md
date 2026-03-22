@@ -2,7 +2,7 @@
 
 ## Session Loot Tracker for Diablo IV
 
-Drop Stats is a fully featured, standalone overlay plugin that tracks everything you pick up during a session. It runs silently in the background, counting your drops, calculating rates, logging recent loot, and keeping a history of your runs — all displayed in a clean, customizable on-screen overlay.
+Drop Stats is a fully featured, standalone overlay plugin that tracks everything you pick up during a session. It runs silently in the background, counting your drops, calculating rates, logging recent loot, tracking Pit runs, and keeping a history of your runs — all displayed in a clean, customizable on-screen overlay.
 
 ---
 
@@ -17,11 +17,27 @@ Every item that enters your inventory is detected and classified:
 - **Mythics** — identified by a built-in database of all known Mythic item IDs (Tyrael's Might, Harlequin Crest, Shattered Vow, etc.)
 - **Runes** — tracked from your socketable inventory, counting stack sizes
 
-### Currencies
+### Currencies & Resources
 - **Obols** (Murmuring Obols) — only counts gains, ignores spending at the Purveyor
+- **Meat** (Meaty Offerings) — tracked from your consumable inventory, only counts pickups
 - **Gold** — only counts gold earned, ignores purchases and repairs
 
-All tracking uses a **positive delta** system: the plugin remembers your previous value and only adds the difference when it goes up. Spending gold, using runes, or gambling obols will never reduce your session totals.
+All tracking uses a **positive delta** system: the plugin remembers your previous value and only adds the difference when it goes up. Spending gold, using runes, gambling obols, or consuming meat will never reduce your session totals.
+
+### Pit Counter
+Drop Stats automatically detects and counts your **Pit of Artificers** runs — no keybind or manual input needed.
+
+The plugin monitors your current zone. When you enter a Pit zone, a timer starts. When you leave the Pit (exit, reset, or teleport out), the run is counted and the duration is recorded. Runs shorter than 15 seconds are ignored to prevent false counts from loading screens or accidental entries.
+
+The Pit line displays after Gold in the overlay, rendered in red bold:
+
+```
+Pits        : 5  4.2/h  avg 2m 35s
+```
+
+- **Count** — total Pit runs completed this session
+- **Per hour** — how many Pits you're clearing per hour (shown after 1 minute of session time)
+- **Average time** — average duration of all completed Pits
 
 ---
 
@@ -76,8 +92,9 @@ One of the most important features: **your stats survive F5 reloads**.
 
 Normally, pressing F5 restarts all Lua plugins and wipes all data. Drop Stats solves this by automatically saving your session to a file (`session_save.txt`) every 5 seconds. When the plugin reloads, it reads the file and restores everything:
 
-- All item counts
-- Gold, Obols, Runes totals
+- All item counts (Rares, Legendaries, Uniques, Mythics, Runes)
+- Gold, Obols, Meat totals
+- Pit count and total Pit time
 - Session elapsed time (uptime continues from where it left off)
 - Peak rates
 - Recent drop log
@@ -95,7 +112,7 @@ The **"F5 Saves Data"** checkbox in the menu lets you control this behavior:
 
 Use the **Reset Session** keybind to completely clear all data:
 
-- All counters go to zero
+- All counters go to zero (items, currencies, pits)
 - Uptime resets
 - Peak rates clear
 - Drop log clears
@@ -118,7 +135,7 @@ Every visual aspect of the overlay is configurable:
 - **Line Gap** (0–10, default: 1) — extra spacing between category lines
 
 ### Per-Category Control
-Each tracked category (Rares, Legendaries, Uniques, Mythics, Runes, Obols, Gold) has its own collapsible settings with:
+Each tracked category (Rares, Legendaries, Uniques, Mythics, Runes, Obols, Meat, Gold) has its own collapsible settings with:
 - **Enable/Disable** — choose which categories appear on the overlay
 - **Bold toggle** — render that category in bold text (double-draw for visibility)
 
@@ -126,6 +143,7 @@ By default, **Uniques and Mythics are bold**, making them stand out from regular
 
 ### Section Toggles
 - **Show Rates (/h)** — display per-hour rates inline
+- **Pit Counter** — auto-detect and count Pit runs with per-hour rate and average time
 - **Show Uptime** — display session timer
 - **Show Peak Rates** — display best rates achieved
 - **Show Recent Drops** — display the scrolling drop log
@@ -145,7 +163,9 @@ Each category has a distinct color for quick visual identification:
 | Mythics | Pink (Bold) |
 | Runes | White |
 | Obols | White |
+| Meat | Red |
 | Gold | Yellow |
+| Pits | Red (Bold) |
 | Peak Rates | Green |
 | Run History (Best) | Green |
 | Section Headers | White (Bold) |
@@ -165,7 +185,7 @@ Tyrael's Might, The Grandfather, Andariel's Visage, Ahavarion Spear of Lycander,
 
 Drop Stats exposes a global API (`PLUGIN_session_stats`) that other plugins can use to read your session data:
 
-- `get_session()` — returns all current totals and uptime
+- `get_session()` — returns all current totals and uptime (including pits, meat, obols)
 - `get_rates()` — returns current per-hour rates
 - `get_peaks()` — returns peak rate records
 - `get_recent_drops(max)` — returns recent drop log entries
@@ -199,7 +219,9 @@ Drop Stats/
 │   ├── items.lua
 │   ├── gold.lua
 │   ├── obols.lua
+│   ├── meat.lua
 │   ├── runes.lua
+│   ├── pit.lua
 │   ├── rates.lua
 │   ├── drops.lua
 │   └── history.lua
@@ -209,7 +231,7 @@ Drop Stats/
     └── rarity.lua
 ```
 3. Press F5 to reload plugins
-4. Open the menu and find **Drop Stats | ALiTiS | v.1.0**
+4. Open the menu and find **Drop Stats | ALiTiS | v.1.2**
 5. Check **Enable** and you're ready to go
 
 ---
@@ -222,32 +244,6 @@ Drop Stats/
 ---
 
 *Created by ALiTiS*
-
----
-
-## Pit Counter
-
-Drop Stats automatically detects and counts your Pit of Artificers runs — no keybind or manual input needed.
-
-### How It Works
-The plugin monitors your current zone. When you enter a Pit zone (`EGD_MSWK_World_01` or `EGD_MSWK_World_02`), a timer starts. When you leave the Pit (exit, reset, or teleport out), the run is counted and the duration is recorded. Runs shorter than 15 seconds are ignored to prevent false counts from loading screens or accidental entries.
-
-### What It Displays
-The Pit line appears after Gold in the overlay, rendered in red bold:
-
-```
-Pits        : 5  4.2/h  avg 2m 35s
-```
-
-- **Count** — total Pit runs completed this session
-- **Per hour** — how many Pits you're clearing per hour (shown after 1 minute)
-- **Average time** — average duration of all completed Pits
-
-### Persistence
-Pit count and total time are included in the F5 save/restore system. Your Pit stats survive reloads and are cleared on manual reset.
-
-### Toggle
-Enable or disable the Pit Counter from the **Tracked Categories** section in the menu. It is enabled by default.
 
 ---
 
