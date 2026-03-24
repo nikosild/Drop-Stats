@@ -4,7 +4,7 @@
 ------------------------------------------------------------
 
 local plugin_label = 'session_stats'
-local plugin_version = 'Drop Stats | ALiTiS | v.1.3'
+local plugin_version = 'Drop Stats | ALiTiS | v.1.4'
 
 local gui = {}
 

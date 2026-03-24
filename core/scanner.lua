@@ -20,6 +20,11 @@ local settings = require 'core.settings'
 
 local scanner = {}
 
+-- Currency/resource baselines are set once immediately on first frame.
+-- Kept separate from first_scan so they don't re-run every frame while
+-- waiting for inventory to populate.
+local _currency_baselined = false
+
 ------------------------------------------------------------
 -- Main scan (called every frame)
 ------------------------------------------------------------
@@ -29,15 +34,19 @@ function scanner.scan()
 
     -- First scan: build baseline across all modules
     if tracker.first_scan then
-        local ok_count = utils.safe_count(function() return lp:get_inventory_items() end)
-        if ok_count == 0 then return end
+        -- Currency baselines run exactly once, don't depend on inventory.
+        if not _currency_baselined then
+            gold.build_baseline(lp)
+            runes.build_baseline(lp)
+            keys.build_baseline(lp)
+            obols.build_baseline(lp)
+            meat.build_baseline(lp)
+            _currency_baselined = true
+        end
 
+        -- Items baseline: try regardless, it's okay if inventory is empty.
+        -- We no longer block on this -- an empty inventory is a valid baseline.
         items.build_baseline(lp)
-        gold.build_baseline(lp)
-        runes.build_baseline(lp)
-        keys.build_baseline(lp)
-        obols.build_baseline(lp)
-        meat.build_baseline(lp)
         history.start_run()
 
         tracker.first_scan = false
@@ -73,6 +82,7 @@ function scanner.reset()
     tracker.first_scan = true
     tracker.uptime_start = get_time_since_inject()
 
+    _currency_baselined = false
     rates.reset_peaks()
     history.clear()
     history.start_run()

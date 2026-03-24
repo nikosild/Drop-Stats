@@ -1,4 +1,4 @@
-# Drop Stats | ALiTiS | v.1.3
+# Drop Stats | ALiTiS | v.1.4
 
 ## Session Loot Tracker for Diablo IV
 
@@ -271,6 +271,10 @@ Drop Stats/
 ---
 
 ## Changelog
+
+### v.1.4
+- **Fixed gold tracking** — gold picked up from the ground now counts correctly
+- Fixed scanner baseline not completing when inventory was empty on load, which also blocked gold, runes, keys, obols, and meat from being tracked until items were present
 
 ### v.1.3
 - **Added Sigils-Keys tracking** — tracks all dungeon keys, nightmare sigils, compasses from `get_dungeon_key_items()`

@@ -27,11 +27,11 @@ local tracker = {
 
     -- Previous scan values (for delta detection)
     prev_scan = {
-        gold  = nil,
-        runes = nil,
-        keys   = nil,
-        obols = nil,
-        meat  = nil,
+        gold         = nil,
+        runes        = nil,
+        keys         = nil,
+        obols        = nil,
+        meat         = nil,
     },
 
     -- Seen item keys (track what's been in inventory)

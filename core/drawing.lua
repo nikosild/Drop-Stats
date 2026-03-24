@@ -44,7 +44,7 @@ local function draw_totals(x, y, fs)
     local show_rates = settings.show_rates
     local secs = utils.get_session_seconds()
 
-    draw_bold('-- Drop Stats | ALiTiS | v.1.3 --', x, y, fs, colors.category.separator())
+    draw_bold('-- Drop Stats | ALiTiS | v.1.4 --', x, y, fs, colors.category.separator())
     y = y + fs + settings.header_gap
 
     local categories = {
