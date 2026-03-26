@@ -22,6 +22,7 @@ colors.category = {
     gold        = function() return color_yellow(255) end,
     obols       = function() return color_cyan(255) end,
     meat        = function() return color_red(255) end,
+    deaths      = function() return color_red(255) end,
     pits        = function() return color_red(255) end,
     uptime      = function() return color_white(255) end,
     rate        = function() return color_white(180) end,

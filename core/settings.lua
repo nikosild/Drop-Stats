@@ -31,6 +31,8 @@ local settings = {
     bold_obols        = false,
     show_meat         = true,
     bold_meat         = false,
+    show_deaths       = true,
+    bold_deaths       = true,
     show_pits         = true,
     show_uptime      = true,
     show_rates       = false,
@@ -68,6 +70,8 @@ function settings:update_settings()
     settings.bold_obols        = el.bold_obols:get()
     settings.show_meat         = el.show_meat:get()
     settings.bold_meat         = el.bold_meat:get()
+    settings.show_deaths       = el.show_deaths:get()
+    settings.bold_deaths       = el.bold_deaths:get()
     settings.show_pits         = el.show_pits:get()
     settings.show_uptime      = el.show_uptime:get()
     settings.show_rates       = el.show_rates:get()

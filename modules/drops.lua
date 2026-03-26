@@ -61,6 +61,7 @@ function drops.get_color(category)
         key       = 'key',
         obols     = 'obols',
         meat      = 'meat',
+        death     = 'deaths',
     }
     local key = map[category] or category
     local color_fn = colors.category[key]

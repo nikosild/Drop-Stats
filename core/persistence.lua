@@ -48,6 +48,7 @@ local function serialize()
         'gold=' .. tostring(s.gold),
         'obols=' .. tostring(s.obols),
         'meat=' .. tostring(s.meat),
+        'deaths=' .. tostring(s.deaths),
         'pits=' .. tostring(s.pits),
         'pit_total_time=' .. tostring(s.pit_total_time),
         'elapsed=' .. tostring(elapsed),
@@ -125,6 +126,7 @@ function persistence.restore()
         tracker.session.gold        = tonumber(data.gold) or 0
         tracker.session.obols       = tonumber(data.obols) or 0
         tracker.session.meat        = tonumber(data.meat) or 0
+        tracker.session.deaths      = tonumber(data.deaths) or 0
         tracker.session.pits        = tonumber(data.pits) or 0
         tracker.session.pit_total_time = tonumber(data.pit_total_time) or 0
 

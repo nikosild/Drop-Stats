@@ -35,6 +35,7 @@ local function recalculate()
         gold        = utils.get_rate(s.gold, secs),
         obols       = utils.get_rate(s.obols, secs),
         meat        = utils.get_rate(s.meat, secs),
+        deaths      = utils.get_rate(s.deaths, secs),
     }
 
     -- Update peaks

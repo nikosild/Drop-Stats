@@ -76,6 +76,10 @@ gui.elements = {
     bold_meat         = create_checkbox(false, 'bold_meat'),
     meat_tree         = tree_node:new(2),
 
+    show_deaths       = create_checkbox(true, 'show_deaths'),
+    bold_deaths       = create_checkbox(true, 'bold_deaths'),
+    deaths_tree       = tree_node:new(2),
+
     show_pits         = create_checkbox(true, 'show_pits'),
 
     -- Extra sections
@@ -169,6 +173,12 @@ function gui.render()
             gui.elements.show_gold:render('Enable', 'Track and display gold earned')
             gui.elements.bold_gold:render('Bold', 'Render gold text in bold')
             gui.elements.gold_tree:pop()
+        end
+
+        if gui.elements.deaths_tree:push('Deaths') then
+            gui.elements.show_deaths:render('Enable', 'Track and display deaths')
+            gui.elements.bold_deaths:render('Bold', 'Render deaths text in bold')
+            gui.elements.deaths_tree:pop()
         end
 
         gui.elements.category_tree:pop()

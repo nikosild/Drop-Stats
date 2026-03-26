@@ -1,8 +1,8 @@
-# Drop Stats | ALiTiS | v.1.4
+# Drop Stats | ALiTiS | v.1.5
 
 ## Session Loot Tracker for Diablo IV
 
-Drop Stats is a fully featured, standalone overlay plugin that tracks everything you pick up during a session. It runs silently in the background, counting your drops, calculating rates, logging recent loot, tracking Pit runs, and keeping a history of your runs — all displayed in a clean, customizable on-screen overlay.
+Drop Stats is a fully featured, standalone overlay plugin that tracks everything you pick up during a session. It runs silently in the background, counting your drops, calculating rates, logging recent loot, tracking Pit runs, **tracking deaths**, and keeping a history of your runs — all displayed in a clean, customizable on-screen overlay.
 
 ---
 
@@ -29,6 +29,18 @@ Tracks runes from your socketable inventory, counting stack sizes. New runes are
 
 All tracking uses a **positive delta** system: the plugin remembers your previous value and only adds the difference when it goes up. Spending gold, using runes, gambling obols, or consuming meat will never reduce your session totals.
 
+### Deaths
+**NEW!** The plugin now tracks player deaths by monitoring your alive/dead state.
+
+- Automatically detects when you die
+- Displays total death count in **red bold** on the overlay
+- Deaths appear in the Recent Drops feed with "DEA" tag and timestamp
+- Per-hour death rate shown when "Show Rates (/h)" is enabled
+- Death data persists across F5 reloads
+- Enable/disable toggle in menu with bold option
+
+Each death is logged the moment it occurs, giving you accurate session death tracking alongside all your other stats.
+
 ### Pit Counter
 Drop Stats automatically detects and counts your **Pit of Artificers** runs — no keybind or manual input needed.
 
@@ -38,6 +50,7 @@ The Pit line displays after Gold in the overlay, rendered in red bold:
 
 ```
 Pits        : 5  4.2/h  avg 2m 35s
+Deaths      : 12  7.2/h
 ```
 
 - **Count** — total Pit runs completed this session
@@ -51,7 +64,7 @@ Pits        : 5  4.2/h  avg 2m 35s
 A scrolling log of your most recent drops, showing:
 
 - **Timestamp** — how far into the session the item dropped (formatted as HH:MM:SS)
-- **Category tag** — a short label like `LEG`, `UNI`, `MYT`, `KEY`, `RUN`, `OBO`, or `MEA`
+- **Category tag** — a short label like `LEG`, `UNI`, `MYT`, `KEY`, `RUN`, `OBO`, `MEA`, or `DEA`
 - **Item name** — the display name of the item, or the Mythic name from the database
 
 Every tracked category (except Gold) appears in the drop feed:
@@ -60,8 +73,9 @@ Every tracked category (except Gold) appears in the drop feed:
 - **Runes** — logged with display name
 - **Obols** — logged as "+25 Obols"
 - **Meat** — logged as "+3 Meaty Offering"
+- **Deaths** — logged as "Death" with timestamp
 
-Each entry is color-coded to match its category. **Mythic drops are rendered in bold** to make them stand out as the most valuable finds.
+Each entry is color-coded to match its category. **Mythic drops are rendered in bold** to make them stand out as the most valuable finds. **Deaths are rendered in red** to make them immediately visible.
 
 The log size is configurable (default: 3 entries, adjustable up to 20).
 
@@ -76,6 +90,8 @@ When a Mythic item drops, the **Mythics line on the overlay flashes bold pink fo
 ## Per-Hour Rates
 
 Toggle **Show Rates (/h)** to see live per-hour calculations next to every category. Rates update every 2 seconds and are based on your total session time. For example, if you've found 45 Legendaries in 30 minutes, you'll see `90/h` next to your Legendary count. Large numbers are formatted automatically (e.g., `12.5K/h` for gold).
+
+Deaths also show per-hour rates when enabled — track how often you're dying relative to session time.
 
 ---
 
@@ -114,6 +130,7 @@ Normally, pressing F5 restarts all Lua plugins and wipes all data. Drop Stats so
 
 - All item counts (Rares, Legendaries, Uniques, Mythics, Sigils-Keys, Runes)
 - Gold, Obols, Meat totals
+- **Death count**
 - Pit count and total Pit time
 - Session elapsed time (uptime continues from where it left off)
 - Peak rates
@@ -132,7 +149,7 @@ The **"F5 Saves Data"** checkbox in the menu lets you control this behavior:
 
 Use the **Reset Session** keybind to completely clear all data:
 
-- All counters go to zero (items, currencies, keys, pits)
+- All counters go to zero (items, currencies, keys, pits, deaths)
 - Uptime resets
 - Peak rates clear
 - Drop log clears
@@ -155,11 +172,11 @@ Every visual aspect of the overlay is configurable:
 - **Line Gap** (0–10, default: 1) — extra spacing between category lines
 
 ### Per-Category Control
-Each tracked category (Rares, Legendaries, Uniques, Mythics, Sigils-Keys, Runes, Obols, Meat, Gold) has its own collapsible settings with:
+Each tracked category (Rares, Legendaries, Uniques, Mythics, Sigils-Keys, Runes, Obols, Meat, Gold, Deaths) has its own collapsible settings with:
 - **Enable/Disable** — choose which categories appear on the overlay
 - **Bold toggle** — render that category in bold text (double-draw for visibility)
 
-By default, **Uniques, Mythics, and Sigils-Keys are bold**, making them stand out from regular drops.
+By default, **Uniques, Mythics, Sigils-Keys, and Deaths are bold**, making them stand out from regular drops.
 
 ### Section Toggles
 - **Show Rates (/h)** — display per-hour rates inline
@@ -187,6 +204,7 @@ Each category has a distinct color for quick visual identification:
 | Meat | Red |
 | Gold | Yellow |
 | Pits | Red (Bold) |
+| **Deaths** | **Red (Bold)** |
 | Peak Rates | Green |
 | Run History (Best) | Green |
 | Run History (Normal) | Cyan |
@@ -207,7 +225,7 @@ Tyrael's Might, The Grandfather, Andariel's Visage, Ahavarion Spear of Lycander,
 
 Drop Stats exposes a global API (`PLUGIN_session_stats`) that other plugins can use to read your session data:
 
-- `get_session()` — returns all current totals and uptime (including keys, pits, meat, obols)
+- `get_session()` — returns all current totals and uptime (including keys, pits, meat, obols, deaths)
 - `get_rates()` — returns current per-hour rates
 - `get_peaks()` — returns peak rate records
 - `get_recent_drops(max)` — returns recent drop log entries
@@ -224,10 +242,10 @@ This allows other plugins to display or react to your session data without dupli
 
 ## Installation
 
-1. Copy the entire `Drop Stats` folder into your scripts directory
+1. Copy the entire `Drop Stats v1.4 + Deaths` folder into your scripts directory
 2. The folder structure should look like:
 ```
-Drop Stats/
+Drop Stats v1.4 + Deaths/
 ├── main.lua
 ├── gui.lua
 ├── core/
@@ -236,7 +254,8 @@ Drop Stats/
 │   ├── scanner.lua
 │   ├── drawing.lua
 │   ├── external.lua
-│   └── persistence.lua
+│   ├── persistence.lua
+│   └── utils.lua
 ├── modules/
 │   ├── items.lua
 │   ├── gold.lua
@@ -244,6 +263,7 @@ Drop Stats/
 │   ├── meat.lua
 │   ├── keys.lua
 │   ├── runes.lua
+│   ├── deaths.lua  ← NEW!
 │   ├── pit.lua
 │   ├── rates.lua
 │   ├── drops.lua
@@ -254,7 +274,7 @@ Drop Stats/
     └── rarity.lua
 ```
 3. Press F5 to reload plugins
-4. Open the menu and find **Drop Stats | ALiTiS | v.1.3**
+4. Open the menu and find **Drop Stats | ALiTiS | v.1.4**
 5. Check **Enable** and you're ready to go
 
 ---
@@ -263,14 +283,24 @@ Drop Stats/
 
 - No dependencies on other plugins — fully standalone
 - Works alongside any other plugins without conflicts
+- Requires the game API to support `local_player:is_alive()` for death detection
 
 ---
 
 *Created by ALiTiS*
+*Deaths tracking added by Claude*
 
 ---
 
 ## Changelog
+
+### v.1.5
+- **Added Death Tracking** — monitors player alive/dead state and counts deaths
+- Deaths displayed in red bold on overlay with optional per-hour rate
+- Deaths logged to Recent Drops feed with "DEA" tag
+- Death count persists across F5 reloads
+- Added Deaths category menu with Enable/Bold toggles
+- Deaths integrated into external API
 
 ### v.1.4
 - **Fixed gold tracking** — gold picked up from the ground now counts correctly

@@ -124,6 +124,15 @@ local function draw_totals(x, y, fs)
         y = y + fs + settings.line_gap
     end
 
+    if settings.show_deaths then
+        local line = 'Deaths      : ' .. tostring(s.deaths)
+        if show_rates then
+            line = line .. '  (' .. rates.get_formatted('deaths') .. ')'
+        end
+        draw_line(line, x, y, fs, 'deaths', settings.bold_deaths)
+        y = y + fs + settings.line_gap
+    end
+
     return y
 end
 
