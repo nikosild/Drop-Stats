@@ -10,20 +10,8 @@ local utils   = require 'core.utils'
 
 local keys = {}
 
--- Track seen key keys to detect new ones
+-- Track seen key identifiers to detect new ones
 local seen_keys = {}
-
-------------------------------------------------------------
--- Make a unique key for a key item
-------------------------------------------------------------
-local function make_key_key(item)
-    local ok, key = pcall(function()
-        return tostring(item:get_sno_id())
-            .. '_' .. tostring(item:get_display_name())
-    end)
-    if ok then return key end
-    return nil
-end
 
 ------------------------------------------------------------
 -- Log a key drop to the drop feed
@@ -41,29 +29,31 @@ local function log_key_drop(name)
 end
 
 ------------------------------------------------------------
--- Count all keys in dungeon key inventory
+-- Fetch dungeon key list.
+-- Returns: list (table|nil), valid (bool)
+-- valid=false when the API call itself failed.
 ------------------------------------------------------------
-local function count_keys(lp)
-    local ok, keys = pcall(function() return lp:get_dungeon_key_items() end)
-    if not ok or not keys then return 0 end
-    return #keys
+local function fetch_keys(lp)
+    local ok, list = pcall(function() return lp:get_dungeon_key_items() end)
+    if not ok or not list then return nil, false end
+    return list, true
 end
 
 ------------------------------------------------------------
 -- Build baseline (first scan)
 ------------------------------------------------------------
 function keys.build_baseline(lp)
-    tracker.prev_scan.keys = count_keys(lp)
+    local list, valid = fetch_keys(lp)
+    if not valid then return end
+
+    tracker.prev_scan.keys = #list
 
     seen_keys = {}
-    local ok, keys = pcall(function() return lp:get_dungeon_key_items() end)
-    if not ok or not keys then return end
-
-    for i, item in pairs(keys) do
+    for i, item in pairs(list) do
         if item then
             local display = utils.safe_get(function() return item:get_display_name() end) or ''
-            local sno = utils.safe_get(function() return item:get_sno_id() end) or ''
-            local key = tostring(sno) .. '_' .. display .. '_' .. tostring(i)
+            local sno     = utils.safe_get(function() return item:get_sno_id() end) or ''
+            local key     = tostring(sno) .. '_' .. display .. '_' .. tostring(i)
             seen_keys[key] = true
         end
     end
@@ -73,46 +63,40 @@ end
 -- Scan for key changes
 ------------------------------------------------------------
 function keys.scan(lp)
-    local current = count_keys(lp)
+    local list, valid = fetch_keys(lp)
+    -- Invalid read: leave prev_scan untouched, don't corrupt baseline
+    if not valid then return end
+
+    local current = #list
+
+    -- Build current key set
+    local current_keys = {}
+    for i, item in pairs(list) do
+        if item then
+            local display = utils.safe_get(function() return item:get_display_name() end) or ''
+            local sno     = utils.safe_get(function() return item:get_sno_id() end) or ''
+            local key     = tostring(sno) .. '_' .. display .. '_' .. tostring(i)
+            current_keys[key] = display
+        end
+    end
 
     if tracker.prev_scan.keys and current > tracker.prev_scan.keys then
         local delta = current - tracker.prev_scan.keys
         tracker.session.keys = tracker.session.keys + delta
 
-        -- Find new keys to log
-        local ok, keys = pcall(function() return lp:get_dungeon_key_items() end)
-        if ok and keys then
-            local current_keys = {}
-            for i, item in pairs(keys) do
-                if item then
-                    local display = utils.safe_get(function() return item:get_display_name() end) or ''
-                    local sno = utils.safe_get(function() return item:get_sno_id() end) or ''
-                    local key = tostring(sno) .. '_' .. display .. '_' .. tostring(i)
-                    current_keys[key] = true
-                    if not seen_keys[key] then
-                        log_key_drop(display)
-                    end
-                end
+        -- Log newly appeared keys
+        for key, display in pairs(current_keys) do
+            if not seen_keys[key] then
+                log_key_drop(display)
             end
-            seen_keys = current_keys
-        end
-    else
-        -- Update seen keys even when no delta
-        local ok, keys = pcall(function() return lp:get_dungeon_key_items() end)
-        if ok and keys then
-            local current_keys = {}
-            for i, item in pairs(keys) do
-                if item then
-                    local display = utils.safe_get(function() return item:get_display_name() end) or ''
-                    local sno = utils.safe_get(function() return item:get_sno_id() end) or ''
-                    local key = tostring(sno) .. '_' .. display .. '_' .. tostring(i)
-                    current_keys[key] = true
-                end
-            end
-            seen_keys = current_keys
         end
     end
 
+    -- Always refresh seen_keys and prev_scan on a valid read
+    seen_keys = {}
+    for key in pairs(current_keys) do
+        seen_keys[key] = true
+    end
     tracker.prev_scan.keys = current
 end
 
@@ -120,7 +104,9 @@ end
 -- Get current key count
 ------------------------------------------------------------
 function keys.get_current(lp)
-    return count_keys(lp)
+    local list, valid = fetch_keys(lp)
+    if not valid then return 0 end
+    return #list
 end
 
 ------------------------------------------------------------

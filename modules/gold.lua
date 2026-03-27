@@ -13,15 +13,22 @@ local gold = {}
 -- Build baseline (first scan)
 ------------------------------------------------------------
 function gold.build_baseline(lp)
-    local amount = utils.safe_get(function() return lp:get_gold() end) or 0
-    tracker.prev_scan.gold = amount
+    -- safe_get returns nil on API failure; don't fall back to 0 here
+    -- because that would treat the full wallet as a gain on the next frame.
+    local amount = utils.safe_get(function() return lp:get_gold() end)
+    if amount then
+        tracker.prev_scan.gold = amount
+    end
 end
 
 ------------------------------------------------------------
 -- Scan for gold changes
 ------------------------------------------------------------
 function gold.scan(lp)
-    local amount = utils.safe_get(function() return lp:get_gold() end) or 0
+    local amount = utils.safe_get(function() return lp:get_gold() end)
+    -- If the API call failed (nil), skip this frame entirely.
+    -- Leaving prev_scan.gold unchanged preserves the baseline.
+    if not amount then return end
 
     if tracker.prev_scan.gold and amount > tracker.prev_scan.gold then
         tracker.session.gold = tracker.session.gold + (amount - tracker.prev_scan.gold)

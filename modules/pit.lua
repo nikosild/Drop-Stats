@@ -14,34 +14,41 @@ local PIT_ZONES = {
     ['EGD_MSWK_World_02'] = true,
 }
 
-local was_in_pit = false
+local was_in_pit    = false
 local pit_enter_time = nil
 
 ------------------------------------------------------------
--- Check if player is currently in a Pit zone
+-- Check if player is currently in a Pit zone.
+-- Returns: in_pit (bool), valid (bool)
+-- valid=false when the world/zone API call itself failed.
 ------------------------------------------------------------
-local function is_in_pit()
+local function check_pit_zone()
     local ok, zone = pcall(function()
         return get_current_world():get_current_zone_name()
     end)
-    if ok and zone then
-        return PIT_ZONES[zone] == true
+    if not ok or not zone then
+        return false, false  -- API failure: unknown state
     end
-    return false
+    return PIT_ZONES[zone] == true, true
 end
 
 ------------------------------------------------------------
 -- Scan for zone transitions (call every frame)
 ------------------------------------------------------------
 function pit.scan()
-    local in_pit = is_in_pit()
+    local in_pit, valid = check_pit_zone()
+
+    -- If the zone API failed this frame, skip entirely.
+    -- was_in_pit is left unchanged so we don't fire a spurious
+    -- "left pit" transition caused by a momentary nil return.
+    if not valid then return end
 
     -- Entered pit
     if in_pit and not was_in_pit then
         pit_enter_time = get_time_since_inject()
     end
 
-    -- Left pit (completed a run)
+    -- Left pit (completed or abandoned)
     if not in_pit and was_in_pit and pit_enter_time then
         local duration = math.floor(get_time_since_inject() - pit_enter_time)
         -- Only count runs that lasted at least 15 seconds
@@ -67,14 +74,15 @@ end
 -- Check if currently in pit (for external use)
 ------------------------------------------------------------
 function pit.is_in_pit()
-    return is_in_pit()
+    local in_pit, _ = check_pit_zone()
+    return in_pit
 end
 
 ------------------------------------------------------------
 -- Reset state
 ------------------------------------------------------------
 function pit.reset()
-    was_in_pit = false
+    was_in_pit    = false
     pit_enter_time = nil
 end
 
