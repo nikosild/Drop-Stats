@@ -1,4 +1,4 @@
-# Drop Stats | ALiTiS | v.1.5
+# Drop Stats | ALiTiS | v.1.6
 
 ## Session Loot Tracker for Diablo IV
 
@@ -29,8 +29,10 @@ Tracks runes from your socketable inventory, counting stack sizes. New runes are
 
 All tracking uses a **positive delta** system: the plugin remembers your previous value and only adds the difference when it goes up. Spending gold, using runes, gambling obols, or consuming meat will never reduce your session totals.
 
+All currency modules now guard against invalid API reads — if the game API returns nothing during a loading screen or zone transition, the previous baseline is preserved and no false gains or losses are recorded.
+
 ### Deaths
-**NEW!** The plugin now tracks player deaths by monitoring your alive/dead state.
+The plugin tracks player deaths by monitoring your alive/dead state.
 
 - Automatically detects when you die
 - Displays total death count in **red bold** on the overlay
@@ -39,12 +41,14 @@ All tracking uses a **positive delta** system: the plugin remembers your previou
 - Death data persists across F5 reloads
 - Enable/disable toggle in menu with bold option
 
-Each death is logged the moment it occurs, giving you accurate session death tracking alongside all your other stats.
+Each death is logged the moment the alive→dead transition occurs. A 10-second cooldown after each detected death prevents double-counting, and the cooldown now fully freezes state reads to avoid edge cases where a rapid respawn could re-arm the trigger incorrectly.
 
 ### Pit Counter
 Drop Stats automatically detects and counts your **Pit of Artificers** runs — no keybind or manual input needed.
 
 The plugin monitors your current zone. When you enter a Pit zone, a timer starts. When you leave the Pit (exit, reset, or teleport out), the run is counted and the duration is recorded. Runs shorter than 15 seconds are ignored to prevent false counts from loading screens or accidental entries.
+
+If the zone API returns nothing during a transition frame, the previous zone state is preserved — preventing spurious pit completions caused by momentary nil returns mid-load.
 
 The Pit line displays after Gold in the overlay, rendered in red bold:
 
@@ -130,7 +134,7 @@ Normally, pressing F5 restarts all Lua plugins and wipes all data. Drop Stats so
 
 - All item counts (Rares, Legendaries, Uniques, Mythics, Sigils-Keys, Runes)
 - Gold, Obols, Meat totals
-- **Death count**
+- Death count
 - Pit count and total Pit time
 - Session elapsed time (uptime continues from where it left off)
 - Peak rates
@@ -204,7 +208,7 @@ Each category has a distinct color for quick visual identification:
 | Meat | Red |
 | Gold | Yellow |
 | Pits | Red (Bold) |
-| **Deaths** | **Red (Bold)** |
+| Deaths | Red (Bold) |
 | Peak Rates | Green |
 | Run History (Best) | Green |
 | Run History (Normal) | Cyan |
@@ -242,10 +246,10 @@ This allows other plugins to display or react to your session data without dupli
 
 ## Installation
 
-1. Copy the entire `Drop Stats v1.4 + Deaths` folder into your scripts directory
+1. Copy the entire `Drop Stats v1.6` folder into your scripts directory
 2. The folder structure should look like:
 ```
-Drop Stats v1.4 + Deaths/
+Drop Stats v1.6/
 ├── main.lua
 ├── gui.lua
 ├── core/
@@ -263,7 +267,7 @@ Drop Stats v1.4 + Deaths/
 │   ├── meat.lua
 │   ├── keys.lua
 │   ├── runes.lua
-│   ├── deaths.lua  ← NEW!
+│   ├── deaths.lua
 │   ├── pit.lua
 │   ├── rates.lua
 │   ├── drops.lua
@@ -274,7 +278,7 @@ Drop Stats v1.4 + Deaths/
     └── rarity.lua
 ```
 3. Press F5 to reload plugins
-4. Open the menu and find **Drop Stats | ALiTiS | v.1.4**
+4. Open the menu and find **Drop Stats | ALiTiS | v.1.6**
 5. Check **Enable** and you're ready to go
 
 ---
@@ -288,11 +292,19 @@ Drop Stats v1.4 + Deaths/
 ---
 
 *Created by ALiTiS*
-*Deaths tracking added by Claude*
 
 ---
 
 ## Changelog
+
+### v.1.6
+- **Fixed invalid-read baseline corruption across all currency and list modules**
+  - `gold.lua` — `get_gold()` returning nil (loading screen, zone transition) was masked by `or 0`, writing a corrupt `0` baseline that caused the entire wallet to appear as a session gain on the next valid frame. Now skips the frame entirely when the API returns nil.
+  - `runes.lua` — `get_socketable_items()` returning nil was silently treated as zero runes, corrupting the prev_scan baseline. Fixed with validity flag; prev_scan is only written on confirmed valid reads. Also eliminated the redundant double API call per frame.
+  - `keys.lua` — same nil-masking bug as runes: `get_dungeon_key_items()` returning nil wrote a zero baseline, causing missed or phantom key counts. Fixed with validity flag and single API call per scan.
+  - `meat.lua` — same class of bug, fixed in v1.5 (valid-read guard on `get_consumable_items()`). Guard logic carried forward unchanged.
+- **Fixed deaths double-count edge case** — during the 10-second post-death cooldown, the old code kept reading and updating `_was_dead`. If the player respawned and died again within the cooldown window, `_was_dead` could flip back to `false`, re-arming the alive→dead edge detector and double-counting the death once the cooldown expired. The cooldown now fully freezes all state reads — the scan function returns immediately with no side effects until the cooldown clears.
+- **Fixed spurious Pit completion on zone API failure** — `get_current_zone_name()` returning nil during a loading screen or zone transition was treated as "not in pit". If the player was in a Pit when the bad frame hit, the `was_in_pit → false` transition would fire immediately, counting an incomplete run. The zone check now returns a validity flag; `was_in_pit` is only updated when the API returns a confirmed zone string.
 
 ### v.1.5
 - **Added Death Tracking** — monitors player alive/dead state and counts deaths
