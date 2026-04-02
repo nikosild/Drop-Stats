@@ -63,7 +63,6 @@ local external = {
             keys        = tracker.session.keys,
             gold        = tracker.session.gold,
             obols       = tracker.session.obols,
-            meat        = tracker.session.meat,
             deaths      = tracker.session.deaths,
             pits        = tracker.session.pits,
             pit_total_time = tracker.session.pit_total_time,

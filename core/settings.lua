@@ -29,8 +29,6 @@ local settings = {
     bold_gold        = false,
     show_obols        = true,
     bold_obols        = false,
-    show_meat         = true,
-    bold_meat         = false,
     show_deaths       = true,
     bold_deaths       = true,
     show_pits         = true,
@@ -68,8 +66,6 @@ function settings:update_settings()
     settings.bold_gold        = el.bold_gold:get()
     settings.show_obols        = el.show_obols:get()
     settings.bold_obols        = el.bold_obols:get()
-    settings.show_meat         = el.show_meat:get()
-    settings.bold_meat         = el.bold_meat:get()
     settings.show_deaths       = el.show_deaths:get()
     settings.bold_deaths       = el.bold_deaths:get()
     settings.show_pits         = el.show_pits:get()

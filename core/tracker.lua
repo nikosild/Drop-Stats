@@ -20,7 +20,6 @@ local tracker = {
         keys        = 0,
         gold        = 0,
         obols       = 0,
-        meat        = 0,
         pits        = 0,
         pit_total_time = 0,
         deaths      = 0,
@@ -32,7 +31,6 @@ local tracker = {
         runes        = nil,
         keys         = nil,
         obols        = nil,
-        meat         = nil,
     },
 
     -- Seen item keys (track what's been in inventory)

@@ -92,14 +92,6 @@ local function draw_totals(x, y, fs)
         y = y + fs + settings.line_gap
     end
 
-    if settings.show_meat then
-        local line = 'Meat        : ' .. utils.format_number(s.meat)
-        if show_rates then
-            line = line .. '  (' .. rates.get_formatted('meat') .. ')'
-        end
-        draw_line(line, x, y, fs, 'meat', settings.bold_meat)
-        y = y + fs + settings.line_gap
-    end
 
     if settings.show_gold then
         local line = 'Gold        : ' .. utils.format_gold(s.gold)

@@ -1,4 +1,4 @@
-# Drop Stats | ALiTiS | v.1.6
+# Drop Stats | ALiTiS | v.1.5
 
 ## Session Loot Tracker for Diablo IV
 
@@ -24,15 +24,12 @@ Tracks runes from your socketable inventory, counting stack sizes. New runes are
 
 ### Currencies & Resources
 - **Obols** (Murmuring Obols) — only counts gains, ignores spending at the Purveyor
-- **Meat** (Meaty Offerings) — tracked from your consumable inventory, only counts pickups
 - **Gold** — only counts gold earned, ignores purchases and repairs
 
-All tracking uses a **positive delta** system: the plugin remembers your previous value and only adds the difference when it goes up. Spending gold, using runes, gambling obols, or consuming meat will never reduce your session totals.
-
-All currency modules now guard against invalid API reads — if the game API returns nothing during a loading screen or zone transition, the previous baseline is preserved and no false gains or losses are recorded.
+All tracking uses a **positive delta** system: the plugin remembers your previous value and only adds the difference when it goes up. Spending gold, using runes, or gambling obols will never reduce your session totals.
 
 ### Deaths
-The plugin tracks player deaths by monitoring your alive/dead state.
+**NEW!** The plugin now tracks player deaths by monitoring your alive/dead state.
 
 - Automatically detects when you die
 - Displays total death count in **red bold** on the overlay
@@ -41,14 +38,12 @@ The plugin tracks player deaths by monitoring your alive/dead state.
 - Death data persists across F5 reloads
 - Enable/disable toggle in menu with bold option
 
-Each death is logged the moment the alive→dead transition occurs. A 10-second cooldown after each detected death prevents double-counting, and the cooldown now fully freezes state reads to avoid edge cases where a rapid respawn could re-arm the trigger incorrectly.
+Each death is logged the moment it occurs, giving you accurate session death tracking alongside all your other stats.
 
 ### Pit Counter
 Drop Stats automatically detects and counts your **Pit of Artificers** runs — no keybind or manual input needed.
 
 The plugin monitors your current zone. When you enter a Pit zone, a timer starts. When you leave the Pit (exit, reset, or teleport out), the run is counted and the duration is recorded. Runs shorter than 15 seconds are ignored to prevent false counts from loading screens or accidental entries.
-
-If the zone API returns nothing during a transition frame, the previous zone state is preserved — preventing spurious pit completions caused by momentary nil returns mid-load.
 
 The Pit line displays after Gold in the overlay, rendered in red bold:
 
@@ -68,7 +63,7 @@ Deaths      : 12  7.2/h
 A scrolling log of your most recent drops, showing:
 
 - **Timestamp** — how far into the session the item dropped (formatted as HH:MM:SS)
-- **Category tag** — a short label like `LEG`, `UNI`, `MYT`, `KEY`, `RUN`, `OBO`, `MEA`, or `DEA`
+- **Category tag** — a short label like `LEG`, `UNI`, `MYT`, `KEY`, `RUN`, `OBO`, or `DEA`
 - **Item name** — the display name of the item, or the Mythic name from the database
 
 Every tracked category (except Gold) appears in the drop feed:
@@ -76,7 +71,6 @@ Every tracked category (except Gold) appears in the drop feed:
 - **Sigils-Keys** — logged with full sigil/key name (e.g., "Charnel House Nightmare Sigil")
 - **Runes** — logged with display name
 - **Obols** — logged as "+25 Obols"
-- **Meat** — logged as "+3 Meaty Offering"
 - **Deaths** — logged as "Death" with timestamp
 
 Each entry is color-coded to match its category. **Mythic drops are rendered in bold** to make them stand out as the most valuable finds. **Deaths are rendered in red** to make them immediately visible.
@@ -133,8 +127,8 @@ One of the most important features: **your stats survive F5 reloads**.
 Normally, pressing F5 restarts all Lua plugins and wipes all data. Drop Stats solves this by automatically saving your session to a file (`session_save.txt`) every 5 seconds. When the plugin reloads, it reads the file and restores everything:
 
 - All item counts (Rares, Legendaries, Uniques, Mythics, Sigils-Keys, Runes)
-- Gold, Obols, Meat totals
-- Death count
+- Gold, Obols totals
+- **Death count**
 - Pit count and total Pit time
 - Session elapsed time (uptime continues from where it left off)
 - Peak rates
@@ -176,7 +170,7 @@ Every visual aspect of the overlay is configurable:
 - **Line Gap** (0–10, default: 1) — extra spacing between category lines
 
 ### Per-Category Control
-Each tracked category (Rares, Legendaries, Uniques, Mythics, Sigils-Keys, Runes, Obols, Meat, Gold, Deaths) has its own collapsible settings with:
+Each tracked category (Rares, Legendaries, Uniques, Mythics, Sigils-Keys, Runes, Obols, Gold, Deaths) has its own collapsible settings with:
 - **Enable/Disable** — choose which categories appear on the overlay
 - **Bold toggle** — render that category in bold text (double-draw for visibility)
 
@@ -205,10 +199,9 @@ Each category has a distinct color for quick visual identification:
 | Sigils-Keys | Green (Bold) |
 | Runes | White |
 | Obols | Cyan |
-| Meat | Red |
 | Gold | Yellow |
 | Pits | Red (Bold) |
-| Deaths | Red (Bold) |
+| **Deaths** | **Red (Bold)** |
 | Peak Rates | Green |
 | Run History (Best) | Green |
 | Run History (Normal) | Cyan |
@@ -229,7 +222,7 @@ Tyrael's Might, The Grandfather, Andariel's Visage, Ahavarion Spear of Lycander,
 
 Drop Stats exposes a global API (`PLUGIN_session_stats`) that other plugins can use to read your session data:
 
-- `get_session()` — returns all current totals and uptime (including keys, pits, meat, obols, deaths)
+- `get_session()` — returns all current totals and uptime (including keys, pits, obols, deaths)
 - `get_rates()` — returns current per-hour rates
 - `get_peaks()` — returns peak rate records
 - `get_recent_drops(max)` — returns recent drop log entries
@@ -246,10 +239,10 @@ This allows other plugins to display or react to your session data without dupli
 
 ## Installation
 
-1. Copy the entire `Drop Stats v1.6` folder into your scripts directory
+1. Copy the entire `Drop Stats v1.4 + Deaths` folder into your scripts directory
 2. The folder structure should look like:
 ```
-Drop Stats v1.6/
+Drop Stats v1.4 + Deaths/
 ├── main.lua
 ├── gui.lua
 ├── core/
@@ -264,10 +257,9 @@ Drop Stats v1.6/
 │   ├── items.lua
 │   ├── gold.lua
 │   ├── obols.lua
-│   ├── meat.lua
 │   ├── keys.lua
 │   ├── runes.lua
-│   ├── deaths.lua
+│   ├── deaths.lua  ← NEW!
 │   ├── pit.lua
 │   ├── rates.lua
 │   ├── drops.lua
@@ -278,7 +270,7 @@ Drop Stats v1.6/
     └── rarity.lua
 ```
 3. Press F5 to reload plugins
-4. Open the menu and find **Drop Stats | ALiTiS | v.1.6**
+4. Open the menu and find **Drop Stats | ALiTiS | v.1.4**
 5. Check **Enable** and you're ready to go
 
 ---
@@ -292,19 +284,11 @@ Drop Stats v1.6/
 ---
 
 *Created by ALiTiS*
+*Deaths tracking added by Claude*
 
 ---
 
 ## Changelog
-
-### v.1.6
-- **Fixed invalid-read baseline corruption across all currency and list modules**
-  - `gold.lua` — `get_gold()` returning nil (loading screen, zone transition) was masked by `or 0`, writing a corrupt `0` baseline that caused the entire wallet to appear as a session gain on the next valid frame. Now skips the frame entirely when the API returns nil.
-  - `runes.lua` — `get_socketable_items()` returning nil was silently treated as zero runes, corrupting the prev_scan baseline. Fixed with validity flag; prev_scan is only written on confirmed valid reads. Also eliminated the redundant double API call per frame.
-  - `keys.lua` — same nil-masking bug as runes: `get_dungeon_key_items()` returning nil wrote a zero baseline, causing missed or phantom key counts. Fixed with validity flag and single API call per scan.
-  - `meat.lua` — same class of bug, fixed in v1.5 (valid-read guard on `get_consumable_items()`). Guard logic carried forward unchanged.
-- **Fixed deaths double-count edge case** — during the 10-second post-death cooldown, the old code kept reading and updating `_was_dead`. If the player respawned and died again within the cooldown window, `_was_dead` could flip back to `false`, re-arming the alive→dead edge detector and double-counting the death once the cooldown expired. The cooldown now fully freezes all state reads — the scan function returns immediately with no side effects until the cooldown clears.
-- **Fixed spurious Pit completion on zone API failure** — `get_current_zone_name()` returning nil during a loading screen or zone transition was treated as "not in pit". If the player was in a Pit when the bad frame hit, the `was_in_pit → false` transition would fire immediately, counting an incomplete run. The zone check now returns a validity flag; `was_in_pit` is only updated when the API returns a confirmed zone string.
 
 ### v.1.5
 - **Added Death Tracking** — monitors player alive/dead state and counts deaths
@@ -316,23 +300,17 @@ Drop Stats v1.6/
 
 ### v.1.4
 - **Fixed gold tracking** — gold picked up from the ground now counts correctly
-- Fixed scanner baseline not completing when inventory was empty on load, which also blocked gold, runes, keys, obols, and meat from being tracked until items were present
+- Fixed scanner baseline not completing when inventory was empty on load, which also blocked gold, runes, keys, and obols from being tracked until items were present
 
 ### v.1.3
 - **Added Sigils-Keys tracking** — tracks all dungeon keys, nightmare sigils, compasses from `get_dungeon_key_items()`
 - Sigils-Keys displayed in green bold on overlay with per-hour rate
-- **All categories now appear in Recent Drops feed** (except Gold) — Runes, Sigils-Keys, Obols, and Meat all log individually
+- **All categories now appear in Recent Drops feed** (except Gold) — Runes, Sigils-Keys, and Obols all log individually
 - **Mythic Flash Alert** — Mythics line flashes bold pink for 10 seconds when a Mythic drops
 - **Mythic drops are bold in Recent Drops** feed for maximum visibility
 - Runes module reworked to track individual items and log to drop feed
 - Updated color scheme: Obols = Cyan, Sigils-Keys = Green, Run History = Cyan
 - Renamed "Sigils" category to "Sigils-Keys" to cover all dungeon entry items
-
-### v.1.2
-- **Added Meat Tracker** — tracks Meaty Offerings picked up from consumable inventory
-- Meat has its own collapsible dropdown with Enable/Bold toggles
-- Displayed in red after Obols, with per-hour rate support
-- Meat data persists across F5 reloads
 
 ### v.1.1
 - **Added Pit Counter** — auto-detects Pit of Artificers runs by monitoring zone transitions

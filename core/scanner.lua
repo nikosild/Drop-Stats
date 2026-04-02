@@ -11,7 +11,6 @@ local gold    = require 'modules.gold'
 local runes   = require 'modules.runes'
 local keys    = require 'modules.keys'
 local obols   = require 'modules.obols'
-local meat    = require 'modules.meat'
 local deaths  = require 'modules.deaths'
 local pit     = require 'modules.pit'
 local rates   = require 'modules.rates'
@@ -41,7 +40,6 @@ function scanner.scan()
             runes.build_baseline(lp)
             keys.build_baseline(lp)
             obols.build_baseline(lp)
-            meat.build_baseline(lp)
             deaths.build_baseline(lp)
             _currency_baselined = true
         end
@@ -61,7 +59,6 @@ function scanner.scan()
     runes.scan(lp)
     keys.scan(lp)
     obols.scan(lp)
-    meat.scan(lp)
     deaths.scan(lp)
     pit.scan()
 
@@ -78,8 +75,8 @@ end
 -- Full reset (clears everything)
 ------------------------------------------------------------
 function scanner.reset()
-    tracker.session    = { rares = 0, legendaries = 0, uniques = 0, mythics = 0, runes = 0, keys = 0, gold = 0, obols = 0, meat = 0, pits = 0, pit_total_time = 0, deaths = 0 }
-    tracker.prev_scan  = { gold = nil, runes = nil, keys = nil, obols = nil, meat = nil }
+    tracker.session    = { rares = 0, legendaries = 0, uniques = 0, mythics = 0, runes = 0, keys = 0, gold = 0, obols = 0, pits = 0, pit_total_time = 0, deaths = 0 }
+    tracker.prev_scan  = { gold = nil, runes = nil, keys = nil, obols = nil }
     tracker.seen_items = {}
     tracker.drop_log   = {}
     tracker.first_scan = true

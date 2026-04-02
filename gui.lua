@@ -72,10 +72,6 @@ gui.elements = {
     show_obols        = create_checkbox(true, 'show_obols'),
     bold_obols        = create_checkbox(false, 'bold_obols'),
 
-    show_meat         = create_checkbox(true, 'show_meat'),
-    bold_meat         = create_checkbox(false, 'bold_meat'),
-    meat_tree         = tree_node:new(2),
-
     show_deaths       = create_checkbox(true, 'show_deaths'),
     bold_deaths       = create_checkbox(true, 'bold_deaths'),
     deaths_tree       = tree_node:new(2),
@@ -161,12 +157,6 @@ function gui.render()
             gui.elements.show_obols:render('Enable', 'Track and display obols earned')
             gui.elements.bold_obols:render('Bold', 'Render obols text in bold')
             gui.elements.obols_tree:pop()
-        end
-
-        if gui.elements.meat_tree:push('Meat') then
-            gui.elements.show_meat:render('Enable', 'Track and display Meaty Offerings earned')
-            gui.elements.bold_meat:render('Bold', 'Render meat text in bold')
-            gui.elements.meat_tree:pop()
         end
 
         if gui.elements.gold_tree:push('Gold') then
