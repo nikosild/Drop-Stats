@@ -1,4 +1,4 @@
-# Drop Stats | ALiTiS | v.1.5
+# Drop Stats | ALiTiS | v.1.7
 
 ## Session Loot Tracker for Diablo IV
 
@@ -289,6 +289,12 @@ Drop Stats v1.4 + Deaths/
 ---
 
 ## Changelog
+
+### v.1.7
+- **Bug fixes and stability improvements** — resolved several edge-case issues affecting session tracking reliability
+
+### v.1.6
+- **Bug fixes** — addressed minor issues with overlay rendering and session persistence
 
 ### v.1.5
 - **Added Death Tracking** — monitors player alive/dead state and counts deaths
